@@ -47,7 +47,7 @@ The main layout is managed by the `Home` component (from `home.tsx`), which incl
     - Defect Rates per Motor Type (Pie Chart).
     - Defect Rates per Design Package (Pie Chart).
     - Average Resolution Time by Severity (Line Chart with mean).
-  - Calculates and displays various metrics like overall average resolution time, average resolution per severity/defect/station/part, defect counts per various categories, etc. (using the `calculateDefectMetrics` function from `utils.ts`).
+  - Calculates and displays various metrics like overall average resolution time, average resolution per severity/defect/station/part, defect counts per various categories, etc. (using the `calculateDefectMetrics` function from `metrics.ts`).
 - **Anomaly Flagging**:
   - **Manual Flagging**: Users can select a defect from the table and manually flag it as an anomaly. This involves providing a note and the suspected value/field. The flagged anomaly is sent to `http://localhost:3000/anomalies` via the `flagAnomalyApi` function (from `anomalies.api.ts`).
   - **Automatic Flagging**:
