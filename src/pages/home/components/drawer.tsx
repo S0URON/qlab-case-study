@@ -40,7 +40,7 @@ export default function ClippedDrawer(props: Props) {
         display: "flex",
       }}
     >
-      <ElevationScroll>
+      {/* <ElevationScroll>
         <AppBar>
           <Toolbar>
             <Box
@@ -82,7 +82,7 @@ export default function ClippedDrawer(props: Props) {
             </Box>
           </Toolbar>
         </AppBar>
-      </ElevationScroll>
+      </ElevationScroll> */}
 
       <Box component="main" sx={{ p: 3 }}>
         <Outlet />
