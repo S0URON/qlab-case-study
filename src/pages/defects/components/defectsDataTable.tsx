@@ -408,7 +408,7 @@ export default function DefectDataTable(props: { data: Defect[] }) {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* <Button
+      <Button
         onClick={() => {
           setOpenFlag(true);
         }}
@@ -426,7 +426,7 @@ export default function DefectDataTable(props: { data: Defect[] }) {
         sx={{ marginTop: 2, marginBottom: 2, marginLeft: 2 }}
       >
         auto Flag anomalies
-      </Button> */}
+      </Button>
       <DataGrid
         rows={data}
         columns={columns}
