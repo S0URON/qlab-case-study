@@ -304,7 +304,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               /> */}
               <Box sx={{ mb: 4 }}>
                 <Typography sx={{ mb: 2 }} align="center" gutterBottom>
-                  defect count By defect Name
+                  Defect count by defect name
                 </Typography>
                 <BarChart
                   xAxis={[
@@ -337,12 +337,13 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                 >
                   <Box sx={{ mb: 4 }}>
                     <Typography sx={{ mb: 2 }} align="center" gutterBottom>
-                      model defect rates (%)
+                      Model defect rates (%)
                     </Typography>
                     <PieChart
                       series={[
                         {
                           data: modelDefectRates,
+                          valueFormatter: (item) => `${item.value.toFixed(3)}%`,
                         },
                       ]}
                       width={200}
@@ -361,12 +362,13 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                 >
                   <Box sx={{ mb: 4 }}>
                     <Typography sx={{ mb: 2 }} align="center" gutterBottom>
-                      Motor Type defect rates (%)
+                      Motor type defect rates (%)
                     </Typography>
                     <PieChart
                       series={[
                         {
                           data: motorTypeDefectRates,
+                          valueFormatter: (item) => `${item.value.toFixed(3)}%`,
                         },
                       ]}
                       width={200}
@@ -385,12 +387,13 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                 >
                   <Box sx={{ mb: 4 }}>
                     <Typography sx={{ mb: 2 }} align="center" gutterBottom>
-                      design Package defect rates (%)
+                    Design package defect rates (%)
                     </Typography>
                     <PieChart
                       series={[
                         {
                           data: packageDefectRates,
+                          valueFormatter: (item) => `${item.value.toFixed(3)}%`,
                         },
                       ]}
                       width={200}
@@ -429,6 +432,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                             color: "#0066B1",
                           },
                         ],
+                        valueFormatter: (item) => `${item.value.toFixed(3)}%`,
                       },
                     ]}
                     height={300}

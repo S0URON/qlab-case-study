@@ -1,6 +1,5 @@
 - x and y labels for the charts
 - average resolution time shouldn't be connected by line
 - average resolution time per station - change it
-- write the percentages on the piecharts and make capitalize them
 - pie charts should have the same size
 - put grid lines on the bar charts
