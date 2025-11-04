@@ -175,6 +175,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                     {
                       id: "barCategories",
                       data: top5Defects.map((defect) => defect.category),
+                      scaleType: "band",
                     },
                   ]}
                   series={[
@@ -184,6 +185,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                     },
                   ]}
                   height={300}
+                  grid={{ vertical: true, horizontal: true }}
                 />
               </Box>
             </Box>
@@ -311,6 +313,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                     {
                       data: Object.keys(defectCountPerDefect),
                       label: "Defect Name",
+                      scaleType: "band",
                     },
                   ]}
                   series={[
@@ -321,6 +324,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                     },
                   ]}
                   height={300}
+                  grid={{ vertical: true, horizontal: true }}
                 />
               </Box>
             </Box>
