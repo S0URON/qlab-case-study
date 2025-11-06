@@ -223,13 +223,21 @@ export async function autoFlagAnomalies(
     case "detectAnomaliesByFrequency":
       // The 'field' parameter is used directly by detectAnomaliesByFrequency.
       // 'controlValue' here acts as the stdDevMultiplier.
-      identifiedDefects = detectAnomaliesByFrequency(defects, field, controlValue);
+      identifiedDefects = detectAnomaliesByFrequency(
+        defects,
+        field,
+        controlValue
+      );
       break;
     case "detectAnomaliesByZScore":
       // Note: detectAnomaliesByZScore is currently hardcoded to use 'severityRating'.
       // The 'field' parameter passed to autoFlagAnomalies might be intended for this,
       // but the internal function doesn't use it. 'controlValue' is the Z-score threshold.
-      identifiedDefects = detectAnomaliesByZScore(defects, "severityRating", controlValue);
+      identifiedDefects = detectAnomaliesByZScore(
+        defects,
+        "severityRating",
+        controlValue
+      );
       break;
     case "detectAnomaliesByIQR":
       // Note: detectAnomaliesByIQR is currently hardcoded to use 'resolutionTime'.
@@ -244,22 +252,20 @@ export async function autoFlagAnomalies(
   }
 
   // Transform identified defect objects into Anomaly objects.
-  identifiedDefects.forEach(
-    (defect) => {
-      const flaggingDate = new Date();
-      anomalies.push({
-        note: `${field} anomaly calculated by ${algorithm.name}`, // Uses the 'field' from autoFlagAnomalies parameters.
-        status: "under review", // Default status for new anomalies.
-        id: Math.floor(Math.random() * 10000) + "", // Generates a random string ID. Consider a more robust ID generation (e.g., UUID).
-        defectId: defect.id,
-        date: flaggingDate, // Stores the full Date object.
-        time: `${flaggingDate.getHours()}:${flaggingDate.getMinutes()}:${flaggingDate.getSeconds()}`, // Formats time.
-        flaggedBy: "system", // Indicates system-generated anomaly.
-        suspectedField: field, // The field on which the anomaly was detected.
-        suspectedValue: defect[field] + "", // The actual value of the suspected field.
-      });
-    }
-  );
+  identifiedDefects.forEach((defect) => {
+    const flaggingDate = new Date();
+    anomalies.push({
+      note: `${field} anomaly calculated by ${algorithm.name}`, // Uses the 'field' from autoFlagAnomalies parameters.
+      status: "under review", // Default status for new anomalies.
+      id: Math.floor(Math.random() * 10000) + "", // Generates a random string ID. Consider a more robust ID generation (e.g., UUID).
+      defectId: defect.id,
+      date: flaggingDate, // Stores the full Date object.
+      time: `${flaggingDate.getHours()}:${flaggingDate.getMinutes()}:${flaggingDate.getSeconds()}`, // Formats time.
+      flaggedBy: "system", // Indicates system-generated anomaly.
+      suspectedField: field, // The field on which the anomaly was detected.
+      suspectedValue: defect[field] + "", // The actual value of the suspected field.
+    });
+  });
 
   // Invoke the callback with the list of created anomaly objects.
   await callback(anomalies);
@@ -385,15 +391,36 @@ export function calculateDefectRatesPerModel(
       carModel: model,
       total: totalDefectsForModel,
       motorTypeRate: {
-        longRange: totalDefectsForModel > 0 ? (motorTypeCount.longRangeCount / totalDefectsForModel) * 100 : 0,
-        highPerformance: totalDefectsForModel > 0 ? (motorTypeCount.highPerformanceCount / totalDefectsForModel) * 100 : 0,
-        standard: totalDefectsForModel > 0 ? (motorTypeCount.standardCount / totalDefectsForModel) * 100 : 0,
+        longRange:
+          totalDefectsForModel > 0
+            ? (motorTypeCount.longRangeCount / totalDefectsForModel) * 100
+            : 0,
+        highPerformance:
+          totalDefectsForModel > 0
+            ? (motorTypeCount.highPerformanceCount / totalDefectsForModel) * 100
+            : 0,
+        standard:
+          totalDefectsForModel > 0
+            ? (motorTypeCount.standardCount / totalDefectsForModel) * 100
+            : 0,
       },
       designPackageRate: {
-        offroad: totalDefectsForModel > 0 ? (designPackageCount.offroadCount / totalDefectsForModel) * 100 : 0,
-        race: totalDefectsForModel > 0 ? (designPackageCount.raceCount / totalDefectsForModel) * 100 : 0,
-        luxury: totalDefectsForModel > 0 ? (designPackageCount.luxuryCount / totalDefectsForModel) * 100 : 0,
-        eco: totalDefectsForModel > 0 ? (designPackageCount.ecoCount / totalDefectsForModel) * 100 : 0,
+        offroad:
+          totalDefectsForModel > 0
+            ? (designPackageCount.offroadCount / totalDefectsForModel) * 100
+            : 0,
+        race:
+          totalDefectsForModel > 0
+            ? (designPackageCount.raceCount / totalDefectsForModel) * 100
+            : 0,
+        luxury:
+          totalDefectsForModel > 0
+            ? (designPackageCount.luxuryCount / totalDefectsForModel) * 100
+            : 0,
+        eco:
+          totalDefectsForModel > 0
+            ? (designPackageCount.ecoCount / totalDefectsForModel) * 100
+            : 0,
       },
     });
   });
@@ -497,21 +524,25 @@ export function packageDefectRate(defects: Defect[]): ModelDefect[] {
  *          Returns an empty defects array if the station name is not in the predefined list or no defects match.
  */
 export function defectsPerStation(defects: Defect[], station: string) {
-  const calculatedData: { id: number; resolutionTime: number }[] = [];
+  const calculatedData: {
+    id: number;
+    resolutionTime: number;
+    partOfTheCar: string;
+  }[] = [];
   // Predefined list of valid station names (case-insensitive).
   const validStations = [
-      "Axle Installation",
-      "Dashboard Installation",
-      "EV Battery Installation",
-      "First Row Seats Installation",
-      "Headlight Installation",
-      "Rear Bumper Installation",
-      "Second Row Seats Installation",
-      "Steering Wheel Installation",
-      "Tire And Rim Installation",
-      "Windshield Installation",
-      "Wire Harness Installation",
-    ].map((s) => s.toLowerCase());
+    "Axle Installation",
+    "Dashboard Installation",
+    "EV Battery Installation",
+    "First Row Seats Installation",
+    "Headlight Installation",
+    "Rear Bumper Installation",
+    "Second Row Seats Installation",
+    "Steering Wheel Installation",
+    "Tire And Rim Installation",
+    "Windshield Installation",
+    "Wire Harness Installation",
+  ].map((s) => s.toLowerCase());
 
   console.log(station); // Logging the input station for debugging.
 
@@ -521,7 +552,12 @@ export function defectsPerStation(defects: Defect[], station: string) {
       .forEach((d) => {
         calculatedData.push({
           id: d.id, // Assuming Defect type has an 'id' property that is a number.
-          resolutionTime: d.resolutionTime,
+          resolutionTime: defects.filter(
+            (de) =>
+              de.station.toLowerCase() == station.toLowerCase() &&
+              de.partOfTheCar == d.partOfTheCar
+          ).length,
+          partOfTheCar: d.partOfTheCar,
         });
       });
   }

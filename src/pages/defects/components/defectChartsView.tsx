@@ -15,7 +15,19 @@ import {
   Typography,
 } from "@mui/material";
 import type { Defect } from "../../../apis/defects.api";
-import { BarChart, LineChart, PieChart } from "@mui/x-charts";
+import {
+  BarChart,
+  BarPlot,
+  ChartContainer,
+  ChartsAxisHighlight,
+  ChartsXAxis,
+  ChartsYAxis,
+  LineChart,
+  LinePlot,
+  MarkPlot,
+  PieChart,
+  ScatterPlot,
+} from "@mui/x-charts";
 import {
   calculateDefectRatesPerModel,
   getTop5MostCommonDefects,
@@ -539,39 +551,30 @@ const DefectChartsView = (props: { data: Defect[] }) => {
           </Box>
         </AppBar>
         <DialogTitle>
-          above avarage {stationCount.station} defect resolution times
+          partOfTheCar count in the {stationCount.station} station
         </DialogTitle>
         <DialogContent>
           <Box
             width="90%"
             sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
           >
-            <LineChart
+            <BarChart
               grid={{ vertical: true, horizontal: true }}
               xAxis={[
                 {
-                  label: "defect ID",
-                  data: stationCountAboveAvg.map((d) => d.id),
+                  label: "part of the car",
+                  data: stationCountAboveAvg.map((d) => {
+                    return d.partOfTheCar;
+                  }),
                 },
               ]}
               series={[
                 {
-                  label: "resolution time (in hours)",
+                  label: "count",
                   data: stationCountAboveAvg.map((d) => d.resolutionTime),
                 },
               ]}
               height={500}
-              onMarkClick={(e, params) => {
-                console.log(params.dataIndex);
-
-                if (params.dataIndex) {
-                  setSeletedDefect({
-                    id: stationCountAboveAvg[params.dataIndex].id,
-                    resolutionTime:
-                      stationCountAboveAvg[params.dataIndex].resolutionTime,
-                  });
-                }
-              }}
             />
             <Box>
               <Typography>selected defect: {selectedDefect?.id}</Typography>
