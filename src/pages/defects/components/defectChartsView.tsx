@@ -176,12 +176,17 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                       id: "barCategories",
                       data: top5Defects.map((defect) => defect.category),
                       scaleType: "band",
+                      label: "Defect Category",
                     },
                   ]}
+                  yAxis={[{
+                    label: "number of defects",
+                  }]}
                   series={[
                     {
                       data: top5Defects.map((defect) => defect.count),
                       color: "#003D78",
+                      label: "Defect Count",
                     },
                   ]}
                   height={300}
@@ -316,6 +321,9 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                       scaleType: "band",
                     },
                   ]}
+                  yAxis={[{
+                    label: "number of defects",
+                  }]}
                   series={[
                     {
                       data: Object.values(defectCountPerDefect),
@@ -458,6 +466,9 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                       label: "Car Model",
                     },
                   ]}
+                  yAxis={[{
+                    label: "hours",
+                  }]}
                   series={[
                     {
                       data: avgMetricsPerModel.map((d) => d.avgSeverity),
@@ -494,6 +505,9 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                       tickLabelStyle: { angle: 0 },
                     },
                   ]}
+                  yAxis={[{
+                    label: "hours",
+                  }]}
                   grid={{ vertical: true, horizontal: true }}
                   series={[
                     {
