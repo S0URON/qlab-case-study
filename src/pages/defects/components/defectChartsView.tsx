@@ -19,14 +19,14 @@ import {
   BarChart,
   BarPlot,
   ChartContainer,
-  ChartsAxisHighlight,
+  ChartsGrid,
+  ChartsLegend,
+  ChartsTooltip,
   ChartsXAxis,
   ChartsYAxis,
   LineChart,
   LinePlot,
-  MarkPlot,
   PieChart,
-  ScatterPlot,
 } from "@mui/x-charts";
 import {
   calculateDefectRatesPerModel,
@@ -70,7 +70,6 @@ const DefectChartsView = (props: { data: Defect[] }) => {
   const [operationFail, setOperationFail] = React.useState(false);
   const {
     top5Defects,
-    defectRates,
     modelDefectRates,
     packageDefectRates,
     motorTypeDefectRates,
@@ -87,27 +86,10 @@ const DefectChartsView = (props: { data: Defect[] }) => {
   }, [data, selectedStation]);
 
   const {
-    overallAvgResolution,
     avgResolutionPerSeverity,
-    avgResolutionPerDefect,
     avgResolutionPerStation,
-    avgResolutionPerPart,
     defectCountPerDefect,
-    defectCountPerModel,
-    defectCountPerPart,
-    defectCountPerShift,
-    mostCommonDefectPerStation,
-    severityDistribution,
-    avgSeverityPerModel,
-    avgSeverityPerStation,
     percentRootCauseIdentified,
-    rootCausePerDefect,
-    avgWithRoot,
-    avgWithoutRoot,
-    reportsPerReporter,
-    avgSeverityPerReporter,
-    avgResolutionPerReporter,
-    defectRatePerModel,
     avgMetricsPerModel,
   } = React.useMemo(() => {
     return calculateDefectMetrics(data);
@@ -210,37 +192,39 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                 <Typography sx={{ mb: 2 }} align="center" gutterBottom>
                   Average Resolution Time by Station
                 </Typography>
-                <LineChart
+                <ChartContainer
                   height={300}
                   xAxis={[
                     {
                       data: avgResolutionPerStationXValues,
-                      label: "Station",
-                      scaleType: "band", // required for categorical strings
-                      tickLabelStyle: {
-                        angle: -45,
-                        textAnchor: "end",
-                        fontSize: 12,
-                      },
+                      scaleType: "band",
                     },
                   ]}
                   series={[
                     {
+                      type: "bar",
                       data: avgResolutionPerStationYValues,
                       label: "Avg Resolution Time (hrs)",
                       color: "#0066B1",
-                      showMark: true,
                     },
                     {
+                      type: "line",
                       data: avgResolutionPerStationMeanLine,
                       label: `Mean (${avgResolutionPerStationMean.toFixed(
                         2
                       )} hrs)`,
                       color: "#E22718",
-                      showMark: false,
                     },
                   ]}
-                />
+                >
+                  <ChartsGrid horizontal vertical />
+                  <BarPlot />
+                  <LinePlot />
+                  <ChartsXAxis />
+                  <ChartsYAxis />
+                  <ChartsLegend />
+                  <ChartsTooltip />
+                </ChartContainer>
               </Box>
               {avgResolutionPerStation
                 .filter(
@@ -464,6 +448,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                   Avg Severity + Resolution per Car Model
                 </Typography>
                 <BarChart
+                  grid={{ vertical: true, horizontal: true }}
                   xAxis={[
                     {
                       data: avgMetricsPerModel.map((d) => d.carModel),
@@ -523,7 +508,6 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                       area: false,
                     },
                   ]}
-                  legend={{ position: "top", align: "right" }}
                 />
               </Box>
             </Box>
@@ -562,21 +546,22 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               grid={{ vertical: true, horizontal: true }}
               xAxis={[
                 {
-                  label: "part of the car",
+                  label: "Part of the car",
                   data: stationCountAboveAvg.map((d) => {
                     return d.partOfTheCar;
                   }),
                 },
               ]}
+              yAxis={[{ label: "Count" }]}
               series={[
                 {
-                  label: "count",
+                  label: "Count",
                   data: stationCountAboveAvg.map((d) => d.resolutionTime),
                 },
               ]}
               height={500}
             />
-            <Box>
+            {/* <Box>
               <Typography>selected defect: {selectedDefect?.id}</Typography>
               <Button
                 disableRipple={true}
@@ -619,7 +604,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               >
                 flag anomaly
               </Button>
-            </Box>
+            </Box> */}
           </Box>
         </DialogContent>
       </Dialog>

@@ -1,39 +1,39 @@
 import Box from "@mui/material/Box";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import { Link, Outlet } from "react-router-dom";
-import * as React from "react";
-import { Divider } from "@mui/material";
-import { useScrollTrigger } from "@mui/material";
-import { AutoAwesome } from "@mui/icons-material";
+// import AppBar from "@mui/material/AppBar";
+// import Toolbar from "@mui/material/Toolbar";
+// import Typography from "@mui/material/Typography";
+import { Outlet } from "react-router-dom";
+// import * as React from "react";
+// import { Divider } from "@mui/material";
+// import { useScrollTrigger } from "@mui/material";
+// import { AutoAwesome } from "@mui/icons-material";
 
-type Page = {
-  displayName: string;
-  path: string;
-};
-interface Props {
-  pages: Page[];
-}
-export default function ClippedDrawer(props: Props) {
-  const [selectedPage, setSelectedPage] = React.useState("Defects");
+// type Page = {
+//   displayName: string;
+//   path: string;
+// };
+// interface Props {
+//   pages: Page[];
+// }
+export default function ClippedDrawer() {
+  // const [selectedPage, setSelectedPage] = React.useState("Defects");
 
-  function ElevationScroll(props) {
-    const trigger = useScrollTrigger({
-      disableHysteresis: true,
-      threshold: 10,
-    });
+  // function ElevationScroll(props) {
+  //   const trigger = useScrollTrigger({
+  //     disableHysteresis: true,
+  //     threshold: 10,
+  //   });
 
-    return React.cloneElement(props.children, {
-      elevation: trigger ? 4 : 1,
-      sx: {
-        backgroundColor: "#003D78",
-        transition: "all 0.3s ease",
-        width: trigger ? "100%" : "98%",
-        margin: trigger ? 0 : 2,
-      },
-    });
-  }
+  //   return React.cloneElement(props.children, {
+  //     elevation: trigger ? 4 : 1,
+  //     sx: {
+  //       backgroundColor: "#003D78",
+  //       transition: "all 0.3s ease",
+  //       width: trigger ? "100%" : "98%",
+  //       margin: trigger ? 0 : 2,
+  //     },
+  //   });
+  // }
   return (
     <Box
       sx={{
