@@ -331,7 +331,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
           </Grid>
           <Grid size={12} container spacing={2}>
             <Grid container spacing={2}>
-              <Grid size={4}>
+              <Grid size={6}>
                 <Box
                   sx={{
                     backgroundColor: "white",
@@ -356,7 +356,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                   </Box>
                 </Box>
               </Grid>
-              <Grid size={4}>
+              <Grid size={6}>
                 <Box
                   sx={{
                     backgroundColor: "white",
@@ -381,7 +381,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                   </Box>
                 </Box>
               </Grid>
-              <Grid size={4}>
+              <Grid size={12}>
                 <Box
                   sx={{
                     backgroundColor: "white",
@@ -391,7 +391,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                 >
                   <Box sx={{ mb: 4 }}>
                     <Typography sx={{ mb: 2 }} align="center" gutterBottom>
-                    Design package defect rates (%)
+                      Design package defect rates (%)
                     </Typography>
                     <PieChart
                       series={[
