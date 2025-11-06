@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Alert,
   AppBar,
@@ -13,9 +13,21 @@ import {
   IconButton,
   Snackbar,
   Typography,
-} from "@mui/material";
-import type { Defect } from "../../../apis/defects.api";
-import { BarChart, LineChart, PieChart } from "@mui/x-charts";
+} from '@mui/material';
+import type { Defect } from '../../../apis/defects.api';
+import {
+  BarChart,
+  BarPlot,
+  ChartContainer,
+  ChartsGrid,
+  ChartsLegend,
+  ChartsTooltip,
+  ChartsXAxis,
+  ChartsYAxis,
+  LineChart,
+  LinePlot,
+  PieChart,
+} from '@mui/x-charts';
 import {
   calculateDefectRatesPerModel,
   getTop5MostCommonDefects,
@@ -23,10 +35,10 @@ import {
   motorTypeDefectRate,
   packageDefectRate,
   defectsPerStation,
-} from "../../../utils/utils";
-import { calculateDefectMetrics } from "../../../utils/metrics";
-import { GridCloseIcon } from "@mui/x-data-grid";
-import { flagAnomalyApi } from "../../../apis/anomalies.api";
+} from '../../../utils/utils';
+import { calculateDefectMetrics } from '../../../utils/metrics';
+import { GridCloseIcon } from '@mui/x-data-grid';
+import { flagAnomalyApi } from '../../../apis/anomalies.api';
 
 /**
  * @typedef {Object} DefectChartsViewProps
@@ -47,7 +59,7 @@ import { flagAnomalyApi } from "../../../apis/anomalies.api";
  */
 const DefectChartsView = (props: { data: Defect[] }) => {
   const { data } = props;
-  const [selectedStation, setSelectedStation] = React.useState("");
+  const [selectedStation, setSelectedStation] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const [selectedDefect, setSeletedDefect] = React.useState<{
     id: number;
@@ -139,8 +151,8 @@ const DefectChartsView = (props: { data: Defect[] }) => {
       <Snackbar
         open={operationSuccess}
         autoHideDuration={3000}
-        message={"Operation Success"}
-        sx={{ backgroundColor: "green" }}
+        message={'Operation Success'}
+        sx={{ backgroundColor: 'green' }}
         onClose={() => {
           setOperationSuccess(false);
         }}
@@ -150,38 +162,38 @@ const DefectChartsView = (props: { data: Defect[] }) => {
         onClose={() => {
           setOperationFail(false);
         }}
-        sx={{ backgroundColor: "red" }}
+        sx={{ backgroundColor: 'red' }}
         autoHideDuration={3000}
-        message="Error Deleting Anomaly"
+        message='Error Deleting Anomaly'
       />
       <Backdrop
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.modal + 3 })}
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.modal + 3 })}
         open={loading}
       >
-        <CircularProgress color="inherit" />
+        <CircularProgress color='inherit' />
       </Backdrop>
       <Grid container spacing={2}>
         <Grid size={6} container spacing={2}>
           <Grid size={12}>
             <Box
-              sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
+              sx={{ backgroundColor: 'white', padding: '16px', boxShadow: 4 }}
             >
               <Box sx={{ mb: 4 }}>
-                <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                   Top 5 defects by defect count
                 </Typography>
                 <BarChart
                   xAxis={[
                     {
-                      id: "barCategories",
+                      id: 'barCategories',
                       data: top5Defects.map((defect) => defect.category),
-                      scaleType: "band",
+                      scaleType: 'band',
                     },
                   ]}
                   series={[
                     {
                       data: top5Defects.map((defect) => defect.count),
-                      color: "#003D78",
+                      color: '#003D78',
                     },
                   ]}
                   height={300}
@@ -192,43 +204,45 @@ const DefectChartsView = (props: { data: Defect[] }) => {
           </Grid>
           <Grid size={12}>
             <Box
-              sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
+              sx={{ backgroundColor: 'white', padding: '16px', boxShadow: 4 }}
             >
               <Box sx={{ mb: 4 }}>
-                <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                   Average Resolution Time by Station
                 </Typography>
-                <LineChart
+                <ChartContainer
                   height={300}
                   xAxis={[
                     {
                       data: avgResolutionPerStationXValues,
-                      label: "Station",
-                      scaleType: "band", // required for categorical strings
-                      tickLabelStyle: {
-                        angle: -45,
-                        textAnchor: "end",
-                        fontSize: 12,
-                      },
+                      scaleType: 'band',
                     },
                   ]}
                   series={[
                     {
+                      type: 'bar',
                       data: avgResolutionPerStationYValues,
-                      label: "Avg Resolution Time (hrs)",
-                      color: "#0066B1",
-                      showMark: true,
+                      label: 'Avg Resolution Time (hrs)',
+                      color: '#0066B1',
                     },
                     {
+                      type: 'line',
                       data: avgResolutionPerStationMeanLine,
                       label: `Mean (${avgResolutionPerStationMean.toFixed(
                         2
                       )} hrs)`,
-                      color: "#E22718",
-                      showMark: false,
+                      color: '#E22718',
                     },
                   ]}
-                />
+                >
+                  <ChartsGrid horizontal vertical />
+                  <BarPlot />
+                  <LinePlot />
+                  <ChartsXAxis />
+                  <ChartsYAxis />
+                  <ChartsLegend />
+                  <ChartsTooltip />
+                </ChartContainer>
               </Box>
               {avgResolutionPerStation
                 .filter(
@@ -236,7 +250,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                     e.averageResolutionTime > avgResolutionPerStationMean + 1
                 )
                 .map((e) => (
-                  <Alert severity="warning">
+                  <Alert severity='warning'>
                     {e.station} is registering a high average !
                     <Button
                       disableFocusRipple={true}
@@ -258,7 +272,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
         <Grid size={6} container spacing={2}>
           <Grid size={12}>
             <Box
-              sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
+              sx={{ backgroundColor: 'white', padding: '16px', boxShadow: 4 }}
             >
               {/* <BarChart
                 dataset={defectRates.map((item) => ({
@@ -305,22 +319,22 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                 {...config}
               /> */}
               <Box sx={{ mb: 4 }}>
-                <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                   Defect count by defect name
                 </Typography>
                 <BarChart
                   xAxis={[
                     {
                       data: Object.keys(defectCountPerDefect),
-                      label: "Defect Name",
-                      scaleType: "band",
+                      label: 'Defect Name',
+                      scaleType: 'band',
                     },
                   ]}
                   series={[
                     {
                       data: Object.values(defectCountPerDefect),
-                      label: "Defect Count",
-                      color: "#0066B1",
+                      label: 'Defect Count',
+                      color: '#0066B1',
                     },
                   ]}
                   height={300}
@@ -334,13 +348,13 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               <Grid size={6}>
                 <Box
                   sx={{
-                    backgroundColor: "white",
-                    padding: "16px",
+                    backgroundColor: 'white',
+                    padding: '16px',
                     boxShadow: 4,
                   }}
                 >
                   <Box sx={{ mb: 4 }}>
-                    <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                    <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                       Model defect rates (%)
                     </Typography>
                     <PieChart
@@ -359,13 +373,13 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               <Grid size={6}>
                 <Box
                   sx={{
-                    backgroundColor: "white",
-                    padding: "16px",
+                    backgroundColor: 'white',
+                    padding: '16px',
                     boxShadow: 4,
                   }}
                 >
                   <Box sx={{ mb: 4 }}>
-                    <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                    <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                       Motor type defect rates (%)
                     </Typography>
                     <PieChart
@@ -384,13 +398,13 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               <Grid size={12}>
                 <Box
                   sx={{
-                    backgroundColor: "white",
-                    padding: "16px",
+                    backgroundColor: 'white',
+                    padding: '16px',
                     boxShadow: 4,
                   }}
                 >
                   <Box sx={{ mb: 4 }}>
-                    <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                    <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                       Design package defect rates (%)
                     </Typography>
                     <PieChart
@@ -413,10 +427,10 @@ const DefectChartsView = (props: { data: Defect[] }) => {
           <Grid container size={6}>
             <Grid size={6}>
               <Box
-                sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
+                sx={{ backgroundColor: 'white', padding: '16px', boxShadow: 4 }}
               >
                 <Box sx={{ mb: 4 }}>
-                  <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                  <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                     Root Cause identification (%)
                   </Typography>
                   <PieChart
@@ -426,14 +440,14 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                           {
                             id: 0,
                             value: percentRootCauseIdentified,
-                            label: "Root Cause: Yes",
-                            color: "#003D78",
+                            label: 'Root Cause: Yes',
+                            color: '#003D78',
                           },
                           {
                             id: 1,
                             value: 100 - percentRootCauseIdentified,
-                            label: "Root Cause: No",
-                            color: "#0066B1",
+                            label: 'Root Cause: No',
+                            color: '#0066B1',
                           },
                         ],
                         valueFormatter: (item) => `${item.value.toFixed(3)}%`,
@@ -446,28 +460,28 @@ const DefectChartsView = (props: { data: Defect[] }) => {
             </Grid>
             <Grid size={6}>
               <Box
-                sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
+                sx={{ backgroundColor: 'white', padding: '16px', boxShadow: 4 }}
               >
-                <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                   Avg Severity + Resolution per Car Model
                 </Typography>
                 <BarChart
                   xAxis={[
                     {
                       data: avgMetricsPerModel.map((d) => d.carModel),
-                      label: "Car Model",
+                      label: 'Car Model',
                     },
                   ]}
                   series={[
                     {
                       data: avgMetricsPerModel.map((d) => d.avgSeverity),
-                      label: "Avg Severity",
-                      color: "#E22718",
+                      label: 'Avg Severity',
+                      color: '#E22718',
                     },
                     {
                       data: avgMetricsPerModel.map((d) => d.avgResolutionTime),
-                      label: "Avg Resolution Time",
-                      color: "#0066B1",
+                      label: 'Avg Resolution Time',
+                      color: '#0066B1',
                     },
                   ]}
                   height={300}
@@ -477,20 +491,20 @@ const DefectChartsView = (props: { data: Defect[] }) => {
           </Grid>
           <Grid size={6}>
             <Box
-              sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
+              sx={{ backgroundColor: 'white', padding: '16px', boxShadow: 4 }}
             >
               <Box sx={{ mb: 4 }}>
-                <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+                <Typography sx={{ mb: 2 }} align='center' gutterBottom>
                   Avg Resolution time per Severity
                 </Typography>
                 <LineChart
-                  sx={{ backgroundColor: "#fff" }}
+                  sx={{ backgroundColor: '#fff' }}
                   height={300}
                   xAxis={[
                     {
                       data: xValues,
-                      label: "Severity Rating",
-                      scaleType: "linear",
+                      label: 'Severity Rating',
+                      scaleType: 'linear',
                       tickLabelStyle: { angle: 0 },
                     },
                   ]}
@@ -498,20 +512,20 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                   series={[
                     {
                       data: yValues,
-                      label: "Avg Resolution Time (hrs)",
-                      color: "blue",
+                      label: 'Avg Resolution Time (hrs)',
+                      color: 'blue',
                       showMark: true,
                       area: false,
                     },
                     {
                       data: meanLine,
                       label: `Mean (${meanY.toFixed(2)} hrs)`,
-                      color: "red",
+                      color: 'red',
                       showMark: false,
                       area: false,
                     },
                   ]}
-                  legend={{ position: "top", align: "right" }}
+                  legend={{ position: 'top', align: 'right' }}
                 />
               </Box>
             </Box>
@@ -520,19 +534,19 @@ const DefectChartsView = (props: { data: Defect[] }) => {
         <Grid size={24}></Grid>
       </Grid>
       <Dialog fullScreen open={open}>
-        <AppBar sx={{ position: "relative", border: 0 }}>
-          <Box display="flex" sx={{ p: 1 }}>
+        <AppBar sx={{ position: 'relative', border: 0 }}>
+          <Box display='flex' sx={{ p: 1 }}>
             <IconButton
-              color="inherit"
+              color='inherit'
               onClick={() => {
                 setOpen(false);
                 setSeletedDefect(undefined);
               }}
-              aria-label="close"
+              aria-label='close'
               sx={{ border: 0 }}
             >
               <GridCloseIcon />
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
                 close
               </Typography>
             </IconButton>
@@ -543,20 +557,20 @@ const DefectChartsView = (props: { data: Defect[] }) => {
         </DialogTitle>
         <DialogContent>
           <Box
-            width="90%"
-            sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}
+            width='90%'
+            sx={{ backgroundColor: 'white', padding: '16px', boxShadow: 4 }}
           >
             <LineChart
               grid={{ vertical: true, horizontal: true }}
               xAxis={[
                 {
-                  label: "defect ID",
+                  label: 'defect ID',
                   data: stationCountAboveAvg.map((d) => d.id),
                 },
               ]}
               series={[
                 {
-                  label: "resolution time (in hours)",
+                  label: 'resolution time (in hours)',
                   data: stationCountAboveAvg.map((d) => d.resolutionTime),
                 },
               ]}
@@ -577,7 +591,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               <Typography>selected defect: {selectedDefect?.id}</Typography>
               <Button
                 disableRipple={true}
-                variant="outlined"
+                variant='outlined'
                 disabled={!selectedDefect}
                 onClick={() => {
                   setLoading(true);
@@ -588,14 +602,14 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                         selectedDefect.resolutionTime -
                         avgResolutionPerStationMean
                       }`,
-                      status: "under review",
-                      id: Math.floor(Math.random() * 10000) + "",
+                      status: 'under review',
+                      id: Math.floor(Math.random() * 10000) + '',
                       defectId: selectedDefect.id,
                       date: flaggingDate,
                       time: `${flaggingDate.getHours()}:${flaggingDate.getMinutes()}:${flaggingDate.getSeconds()}`,
-                      flaggedBy: "user",
-                      suspectedValue: selectedDefect.resolutionTime + "",
-                      suspectedField: "Resolution time",
+                      flaggedBy: 'user',
+                      suspectedValue: selectedDefect.resolutionTime + '',
+                      suspectedField: 'Resolution time',
                     })
                       .then((r) => {
                         console.log(r);
