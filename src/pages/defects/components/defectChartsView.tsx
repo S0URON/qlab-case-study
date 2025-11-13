@@ -128,6 +128,83 @@ const DefectChartsView = (props: { data: Defect[] }) => {
     };
   }, [avgResolutionPerStation, stationCount]);
 
+  // Heatmap data: Average severity by station and defect name
+  const heatmapData = React.useMemo(() => {
+    const severityByStationAndDefect: {
+      [key: string]: { [key: string]: number[] };
+    } = {};
+
+    data.forEach((defect) => {
+      const station = defect.station || "Unknown";
+      const defectName = defect.defectName || "Unknown";
+
+      if (!severityByStationAndDefect[station]) {
+        severityByStationAndDefect[station] = {};
+      }
+      if (!severityByStationAndDefect[station][defectName]) {
+        severityByStationAndDefect[station][defectName] = [];
+      }
+
+      severityByStationAndDefect[station][defectName].push(
+        defect.severityRating
+      );
+    });
+
+    // Calculate averages and format for heatmap
+    const heatmapArray: Array<{
+      station: string;
+      defectName: string;
+      avgSeverity: number;
+    }> = [];
+
+    Object.entries(severityByStationAndDefect).forEach(([station, defects]) => {
+      Object.entries(defects).forEach(([defectName, severities]) => {
+        const avgSeverity =
+          severities.reduce((a, b) => a + b, 0) / severities.length;
+        heatmapArray.push({
+          station,
+          defectName,
+          avgSeverity: parseFloat(avgSeverity.toFixed(2)),
+        });
+      });
+    });
+
+    return heatmapArray;
+  }, [data]);
+
+  // Get unique stations and defect names for heatmap dimensions
+  const heatmapDimensions = React.useMemo(() => {
+    const stations = [...new Set(heatmapData.map((d) => d.station))].sort();
+    const defectNames = [
+      ...new Set(heatmapData.map((d) => d.defectName)),
+    ].sort();
+    return { stations, defectNames };
+  }, [heatmapData]);
+
+  // Create matrix for visualization
+  const heatmapMatrix = React.useMemo(() => {
+    const matrix: number[][] = [];
+    heatmapDimensions.stations.forEach((station) => {
+      const row: number[] = [];
+      heatmapDimensions.defectNames.forEach((defectName) => {
+        const entry = heatmapData.find(
+          (d) => d.station === station && d.defectName === defectName
+        );
+        row.push(entry?.avgSeverity || 0);
+      });
+      matrix.push(row);
+    });
+    return matrix;
+  }, [heatmapData, heatmapDimensions]);
+
+  const getHeatmapColor = (value: number, max: number) => {
+    if (value === 0) return "#f5f5f5";
+    const ratio = value / max;
+    if (ratio < 0.33) return "#90EE90"; // Light green
+    if (ratio < 0.66) return "#FFD700"; // Gold
+    return "#FF6B6B"; // Red
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Snackbar
@@ -196,10 +273,12 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                   height={300}
                   xAxis={[
                     {
+                      label: "Station",
                       data: avgResolutionPerStationXValues,
                       scaleType: "band",
                     },
                   ]}
+                  yAxis={[{ label: "Avg Resolution Time (hrs)" }]}
                   series={[
                     {
                       type: "bar",
@@ -512,6 +591,120 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               </Box>
             </Box>
           </Grid>
+        </Grid>
+        <Grid size={12}>
+          <Box sx={{ backgroundColor: "white", padding: "16px", boxShadow: 4 }}>
+            <Typography sx={{ mb: 2 }} align="center" gutterBottom>
+              Average Severity Rating by Station and Defect
+            </Typography>
+            <Box sx={{ overflowX: "auto", p: 2 }}>
+              <Box sx={{ minWidth: "600px" }}>
+                <Box display="flex">
+                  <Box sx={{ minWidth: "120px" }} />
+                  {heatmapDimensions.defectNames.map((defectName) => (
+                    <Box
+                      key={defectName}
+                      sx={{
+                        minWidth: "100px",
+                        textAlign: "center",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        p: 1,
+                      }}
+                    >
+                      {defectName}
+                    </Box>
+                  ))}
+                </Box>
+                {heatmapDimensions.stations.map((station, stationIdx) => (
+                  <Box key={station} display="flex">
+                    <Box
+                      sx={{
+                        minWidth: "120px",
+                        textAlign: "right",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        p: 1,
+                        pr: 2,
+                      }}
+                    >
+                      {station}
+                    </Box>
+                    {heatmapDimensions.defectNames.map(
+                      (defectName, defectIdx) => {
+                        const value = heatmapMatrix[stationIdx][defectIdx];
+                        const maxValue = Math.max(...heatmapMatrix.flat());
+                        return (
+                          <Box
+                            key={`${station}-${defectName}`}
+                            sx={{
+                              minWidth: "100px",
+                              backgroundColor: getHeatmapColor(value, maxValue),
+                              border: "1px solid #ddd",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              p: 1,
+                              fontSize: "12px",
+                              fontWeight: "bold",
+                              cursor: "pointer",
+                              "&:hover": {
+                                opacity: 0.8,
+                              },
+                            }}
+                            title={`${station} - ${defectName}: ${value}`}
+                          >
+                            {value > 0 ? value : "-"}
+                          </Box>
+                        );
+                      }
+                    )}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+            {/* Legend */}
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "center",
+                gap: 2,
+                flexWrap: "wrap",
+              }}
+            >
+              <Box display="flex" alignItems="center" gap={1}>
+                <Box
+                  sx={{
+                    width: "20px",
+                    height: "20px",
+                    backgroundColor: "#90EE90",
+                  }}
+                />
+                <Typography variant="caption">Low</Typography>
+              </Box>
+              <Box display="flex" alignItems="center" gap={1}>
+                <Box
+                  sx={{
+                    width: "20px",
+                    height: "20px",
+                    backgroundColor: "#FFD700",
+                  }}
+                />
+                <Typography variant="caption">Medium</Typography>
+              </Box>
+              <Box display="flex" alignItems="center" gap={1}>
+                <Box
+                  sx={{
+                    width: "20px",
+                    height: "20px",
+                    backgroundColor: "#FF6B6B",
+                  }}
+                />
+                <Typography variant="caption">High</Typography>
+              </Box>
+            </Box>
+          </Box>
         </Grid>
         <Grid size={24}></Grid>
       </Grid>
