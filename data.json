@@ -199940,6 +199940,17 @@
       "flaggedBy": "user",
       "suspectedValue": "23",
       "suspectedField": "Resolution time"
+    },
+    {
+      "id": "2455",
+      "note": "Resolution time above general average (12.19358523680531) by 8.80641476319469",
+      "status": "under review",
+      "defectId": "1027",
+      "date": "2025-11-06T11:48:44.763Z",
+      "time": "12:48:44",
+      "flaggedBy": "user",
+      "suspectedValue": "21",
+      "suspectedField": "Resolution time"
     }
   ]
 }
