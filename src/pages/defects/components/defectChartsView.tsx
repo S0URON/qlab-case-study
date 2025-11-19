@@ -200,6 +200,9 @@ const DefectChartsView = (props: { data: Defect[] }) => {
   const getHeatmapColor = (value: number, max: number) => {
     if (value === 0) return "#f5f5f5";
     const ratio = value / max;
+    return `#003D78${Math.floor(ratio * 255)
+      .toString(16)
+      .padStart(2, "0")}`;
     if (ratio < 0.33) return "#90EE90"; // Light green
     if (ratio < 0.66) return "#FFD700"; // Gold
     return "#FF6B6B"; // Red
@@ -619,10 +622,24 @@ const DefectChartsView = (props: { data: Defect[] }) => {
             <Typography sx={{ mb: 2 }} align="center" gutterBottom>
               Average Severity Rating by Station and Defect
             </Typography>
-            <Box sx={{ overflowX: "auto", p: 2 }}>
+            <Box
+              sx={{
+                overflowX: "auto",
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <Box sx={{ minWidth: "600px" }}>
                 <Box display="flex">
-                  <Box sx={{ minWidth: "120px" }} />
+                  <Box
+                    sx={{
+                      minWidth: "120px",
+                      marginRight: "20px",
+                      textAlign: "center",
+                    }}
+                  />
                   {heatmapDimensions.defectNames.map((defectName) => (
                     <Box
                       key={defectName}
@@ -643,7 +660,9 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                     <Box
                       sx={{
                         minWidth: "120px",
+                        maxWidth: "120px",
                         textAlign: "right",
+                        height: "30px",
                         fontSize: "12px",
                         fontWeight: "bold",
                         p: 1,
@@ -698,9 +717,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               <Box display="flex" alignItems="center" gap={1}>
                 <Box
                   sx={{
-                    width: "20px",
                     height: "20px",
-                    backgroundColor: "#90EE90",
                   }}
                 />
                 <Typography variant="caption">Low</Typography>
@@ -708,19 +725,18 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               <Box display="flex" alignItems="center" gap={1}>
                 <Box
                   sx={{
-                    width: "20px",
-                    height: "20px",
-                    backgroundColor: "#FFD700",
+                    width: "200px",
+                    height: "50px",
+                    background: `linear-gradient(90deg, #FFFFFF 0%,#eef6ff 20%,#d8ecff 40%,#b4dbf6 60%,#6aa6dd 80%,#003D78 100%)`,
+                    border: "1px solid #ddd",
                   }}
                 />
-                <Typography variant="caption">Medium</Typography>
+                {/** a chromatic scale from #ffffff to #003D78 */}
               </Box>
               <Box display="flex" alignItems="center" gap={1}>
                 <Box
                   sx={{
-                    width: "20px",
                     height: "20px",
-                    backgroundColor: "#FF6B6B",
                   }}
                 />
                 <Typography variant="caption">High</Typography>
@@ -776,50 +792,6 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               ]}
               height={500}
             />
-            {/* <Box>
-              <Typography>selected defect: {selectedDefect?.id}</Typography>
-              <Button
-                disableRipple={true}
-                variant="outlined"
-                disabled={!selectedDefect}
-                onClick={() => {
-                  setLoading(true);
-                  if (selectedDefect) {
-                    const flaggingDate = new Date();
-                    flagAnomalyApi({
-                      note: `Resolution time above general average (${avgResolutionPerStationMean}) by ${
-                        selectedDefect.resolutionTime -
-                        avgResolutionPerStationMean
-                      }`,
-                      status: "under review",
-                      id: Math.floor(Math.random() * 10000) + "",
-                      defectId: selectedDefect.id,
-                      date: flaggingDate,
-                      time: `${flaggingDate.getHours()}:${flaggingDate.getMinutes()}:${flaggingDate.getSeconds()}`,
-                      flaggedBy: "user",
-                      suspectedValue: selectedDefect.resolutionTime + "",
-                      suspectedField: "Resolution time",
-                    })
-                      .then((r) => {
-                        console.log(r);
-                        setLoading(false);
-                        //   setOpenFlag(false);
-                        setOperationSuccess(true);
-                        setSeletedDefect(undefined);
-                      })
-                      .catch((e) => {
-                        console.log(e);
-                        setLoading(false);
-                        //   setOpenFlag(false);
-                        setSeletedDefect(undefined);
-                        setOperationFail(true);
-                      });
-                  }
-                }}
-              >
-                flag anomaly
-              </Button>
-            </Box> */}
           </Box>
         </DialogContent>
       </Dialog>
