@@ -280,12 +280,14 @@ const DefectChartsView = (props: { data: Defect[] }) => {
                   Average Resolution Time by Station
                 </Typography>
                 <ChartContainer
-                  height={300}
+                  height={400}
                   xAxis={[
                     {
                       label: "Station",
                       data: avgResolutionPerStationXValues,
                       scaleType: "band",
+                      tickLabelStyle: { angle: -45 },
+                      height: 160,
                     },
                   ]}
                   yAxis={[{ label: "Avg Resolution Time (hrs)" }]}
