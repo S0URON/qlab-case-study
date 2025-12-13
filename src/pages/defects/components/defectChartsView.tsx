@@ -209,7 +209,15 @@ const DefectChartsView = (props: { data: Defect[] }) => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        width: window.innerWidth - 120,
+        height: "auto",
+        padding: 2,
+        marginTop: 8,
+      }}
+    >
       <Snackbar
         open={operationSuccess}
         autoHideDuration={3000}
@@ -727,7 +735,7 @@ const DefectChartsView = (props: { data: Defect[] }) => {
               <Box display="flex" alignItems="center" gap={1}>
                 <Box
                   sx={{
-                    width: "200px",
+                    width: "300px",
                     height: "50px",
                     background: `linear-gradient(90deg, #FFFFFF 0%,#eef6ff 20%,#d8ecff 40%,#b4dbf6 60%,#6aa6dd 80%,#003D78 100%)`,
                     border: "1px solid #ddd",

@@ -6,8 +6,8 @@ const Home = () => {
     <Box sx={{ margin: 0, padding: 0 }}>
       <ClippedDrawer
         pages={[
-          { displayName: "Defects", path: "/" },
-          { displayName: "Anomalies", path: "/anomalies" },
+          { displayName: "Tabular View", path: "/" },
+          { displayName: "Charts View", path: "/charts" },
         ]}
       />
     </Box>

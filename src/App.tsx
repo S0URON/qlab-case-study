@@ -8,16 +8,10 @@ import Home from "./pages/home/home";
 import DefectsTable from "./pages/defects/defects";
 import AnomaliesTable from "./pages/anomlies/anomlies";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route element={<Home />}>
-      <Route index element={<DefectsTable />} />
-      <Route path="/anomalies" element={<AnomaliesTable />} />
-      <Route path="*" element={<div>page not found</div>} />
-    </Route>
-  )
-);
+import DefectChartsView from "./pages/defects/components/defectChartsView";
+import DefectDataTable from "./pages/defects/components/defectsDataTable";
+import React from "react";
+import { getDefectsApi, type Defect } from "./apis/defects.api";
 
 const theme = createTheme({
   typography: {
@@ -40,6 +34,27 @@ const theme = createTheme({
 });
 
 function App() {
+  const [data, setData] = React.useState<Defect[]>([]);
+  React.useEffect(() => {
+    getDefectsApi()
+      .then((result) => {
+        setData(result);
+      })
+      .catch((e) => {
+        console.log(e);
+        setData([]);
+      });
+  }, []);
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route element={<Home />}>
+        <Route index element={<DefectDataTable data={data} />} />
+        <Route path="/charts" element={<DefectChartsView data={data} />} />
+        <Route path="*" element={<div>page not found</div>} />
+      </Route>
+    )
+  );
   return (
     <ThemeProvider theme={theme}>
       <RouterProvider router={router} />

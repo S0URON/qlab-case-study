@@ -204,7 +204,14 @@ export default function DefectDataTable(props: { data: Defect[] }) {
   };
 
   return (
-    <Box sx={{ margin: 0, padding: 0, height: "100%", width: "100%" }}>
+    <Box
+      sx={{
+        width: window.innerWidth - 120,
+        height: "auto",
+        padding: 2,
+        marginTop: 8,
+      }}
+    >
       <Snackbar
         open={operationSuccess}
         autoHideDuration={3000}
